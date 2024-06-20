@@ -11,6 +11,12 @@ model Task {
   id          Int      @id @default(autoincrement())
   title       String
   description String
-  status      String
-  createdAt   DateTime @default(now())
+  status      Status    @default(PENDING)
+  createdAt   DateTime  @default(now())
+}
+
+enum Status {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
 }

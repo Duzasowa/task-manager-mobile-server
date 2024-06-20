@@ -1,73 +1,159 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Task Manager Mobile server
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This is the backend for the Task Manager application built using NestJS. It provides a RESTful API for managing tasks.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
 
-## Description
+- Create, read, update, and delete tasks
+- CORS enabled for all origins
+- Global validation for request payloads
+- Detailed error handling with appropriate HTTP status codes
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Getting Started
 
-## Installation
+### Prerequisites
 
-```bash
-$ npm install
-```
+- Node.js
+- npm or yarn
+- PostgreSQL (or any other database supported by Prisma)
 
-## Running the app
+### Installation
 
-```bash
-# development
-$ npm run start
+1. Clone the repository:
 
-# watch mode
-$ npm run start:dev
+   ```bash
+   git clone https://github.com/your-repo/task-manager-backend.git
+   cd task-manager-backend
+   ```
 
-# production mode
-$ npm run start:prod
-```
+2. Install dependencies:
 
-## Test
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
 
-```bash
-# unit tests
-$ npm run test
+3. Configure the environment variables:
+   Modify a `.env` file in the root directory and add your database connection string:
 
-# e2e tests
-$ npm run test:e2e
+   ```env
+   DATABASE_URL="postgresql://user:password@localhost:5432/taskmanager"
+   PORT=5000
+   ```
 
-# test coverage
-$ npm run test:cov
-```
+4. Set up the database with Prisma:
+   ```bash
+   npx prisma migrate dev --name init
+   npx prisma generate
+   ```
 
-## Support
+### Running the Application
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+1. Start the development server:
 
-## Stay in touch
+   ```bash
+   npm run start:dev
+   # or
+   yarn start:dev
+   ```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+2. The server will be running at `http://localhost:5000`.
 
-## License
+## API Endpoints
 
-Nest is [MIT licensed](LICENSE).
+### Create a Task
+
+- **URL:** `/tasks`
+- **Method:** `POST`
+- **Body:**
+  ```json
+  {
+      "title": "Task Title",
+      "description": "Task Description",
+      "status": "PENDING" | "IN_PROGRESS" | "COMPLETED"
+  }
+  ```
+- **Response:** `201 Created`
+  ```json
+  {
+    "id": 1,
+    "title": "Task Title",
+    "description": "Task Description",
+    "status": "PENDING"
+  }
+  ```
+
+### Get All Tasks
+
+- **URL:** `/tasks`
+- **Method:** `GET`
+- **Response:** `200 OK`
+  ```json
+  [
+    {
+      "id": 1,
+      "title": "Task Title",
+      "description": "Task Description",
+      "status": "PENDING"
+    }
+  ]
+  ```
+
+### Get Task by ID
+
+- **URL:** `/tasks/:id`
+- **Method:** `GET`
+- **Response:** `200 OK`
+  ```json
+  {
+    "id": 1,
+    "title": "Task Title",
+    "description": "Task Description",
+    "status": "PENDING"
+  }
+  ```
+
+### Update a Task
+
+- **URL:** `/tasks/:id`
+- **Method:** `PUT`
+- **Body:**
+  ```json
+  {
+      "title": "Updated Title",
+      "description": "Updated Description",
+      "status": "PENDING" | "IN_PROGRESS" | "COMPLETED"
+  }
+  ```
+- **Response:** `200 OK`
+  ```json
+  {
+    "id": 1,
+    "title": "Updated Title",
+    "description": "Updated Description",
+    "status": "IN_PROGRESS"
+  }
+  ```
+
+### Delete a Task
+
+- **URL:** `/tasks/:id`
+- **Method:** `DELETE`
+- **Response:** `200 OK`
+  ```json
+  {
+    "id": 1,
+    "title": "Task Title",
+    "description": "Task Description",
+    "status": "PENDING"
+  }
+  ```
+
+## Error Handling
+
+The API provides meaningful error messages and appropriate HTTP status codes for different error scenarios. For instance:
+
+- `400 Bad Request` for validation errors
+- `404 Not Found` for missing resources
+- `500 Internal Server Error` for unexpected server errors

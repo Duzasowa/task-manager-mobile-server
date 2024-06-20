@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Task, Prisma } from '@prisma/client';
 
@@ -17,12 +17,17 @@ export class TasksService {
   }
 
   async getTaskById(id: number): Promise<Task> {
-    return this.prisma.task.findUnique({
+    const task = await this.prisma.task.findUnique({
       where: { id },
     });
+    if (!task) {
+      throw new NotFoundException(`Task with ID ${id} not found`);
+    }
+    return task;
   }
 
   async updateTask(id: number, data: Prisma.TaskUpdateInput): Promise<Task> {
+    await this.getTaskById(id);
     return this.prisma.task.update({
       where: { id },
       data,
@@ -30,6 +35,7 @@ export class TasksService {
   }
 
   async deleteTask(id: number): Promise<Task> {
+    await this.getTaskById(id);
     return this.prisma.task.delete({
       where: { id },
     });
